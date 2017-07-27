@@ -40,6 +40,9 @@ $siteid = $x.tsResponse.credentials.site.id
 $sitelisturl = '/api/2.3/sites?pageSize=1000&pageNumber=1'
 [xml]$sitelistresp = invoke-WebRequest -Uri $tabserver/$sitelisturl -Method GET -ContentType "text/xml" -Headers @{"X-Tableau-Auth"=$token}
 
+# Header for Output file
+"""Username"",""Role"""
+
 ForEach ($row in $sitelistresp.tsResponse.sites.ChildNodes) {
     $siteshortname = $row.contentUrl
     [xml]$xml_loginpayload = '<tsRequest><credentials name="'+$usr+'" password="'+$pass+'" ><site contentUrl="'+$siteshortname+'" /></credentials></tsRequest>'
@@ -59,9 +62,6 @@ ForEach ($row in $sitelistresp.tsResponse.sites.ChildNodes) {
        
        # Get the number of Pages we will have to loop through
        $last_page = ([int]$intNum / 1000)
-       
-       # Header for Output file
-       """Username"",""Role"""
        
        While ($next_page -le $last_page) {
        

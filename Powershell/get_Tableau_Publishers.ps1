@@ -11,12 +11,16 @@
 #    .\get_Tableau_Publishers.ps1 | Out-File Tableau_User_Roles.csv
 # 4) When prompted enter your Tableau Server Address, Username, Password and Site
 # 5) Open Tableau_User_Roles.csv with your favorite text editor and validate
-
+#
+# ========================
+# Known Issues:
+# 1) Current API version does not allow you to pull users from Sites other than default
+# 
 # Prompt user for details to connect
 $tabserver = Read-Host -prompt 'Enter your Domain (ie: https://your.tableau.domain)'
 $usr = Read-Host -Prompt 'Username'
 $pass = Read-Host -Prompt 'Password'
-$siteshortname = Read-Host -prompt 'Site (Hit Enter for Default Site)'
+$siteshortname = Read-Host -prompt 'Site (Hit Enter for Default Site !!Known Issue - Only Default Site Works!!)'
 
 # Powershell does not accept a goog non-value here so checking and reassigning
 if ([string]::IsNullOrWhiteSpace($siteshortname)) {

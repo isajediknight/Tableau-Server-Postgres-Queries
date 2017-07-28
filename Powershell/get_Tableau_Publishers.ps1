@@ -106,7 +106,7 @@ ForEach ($row in $sitelistresp.tsResponse.sites.ChildNodes) {
           ForEach ($subrow in $SiteUserLst) {
               $row_user_name = $subrow | select name
               $row_site_role = $subrow | select siteRole
-              """$($row_user_name.name)"",""$($row_site_role.siteRole),""$($current_site_name)"""
+              """$($row_user_name.name)"",""$($row_site_role.siteRole)"",""$($current_site_name)"""
           }
       }
 }

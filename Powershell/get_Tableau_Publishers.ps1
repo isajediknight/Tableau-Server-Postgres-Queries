@@ -30,7 +30,7 @@
 #
 # ===== Did this help you? ==========
 # If you find this code useful please mark this reply as helpful on Tableau Communiy Forum:
-# https://community.tableau.com/message/647066#647066
+# https://community.tableau.com/message/647650#647650
 # 
 # ===== Begin Main Code =============
 # Prompt user for details to connect

@@ -1,3 +1,5 @@
+--Original Author: Damien Lasage
+--https://community.tableau.com/message/594729#594729
 SELECT  
     ds.id as datasource_id,  
     ds.name as datasource_name,  

@@ -1,0 +1,43 @@
+--Monitor Requests And Users
+--Last tested on Tableau Server 10.3
+SELECT "_users"."id" AS "id",
+  "_users"."name" AS "name",
+  "_users"."login_at" AS "login_at",
+  "_users"."friendly_name" AS "friendly_name",
+  "_users"."licensing_role_id" AS "licensing_role_id",
+  "_users"."licensing_role_name" AS "licensing_role_name",
+  "_users"."domain_id" AS "domain_id",
+  "_users"."system_user_id" AS "system_user_id",
+  "_users"."domain_name" AS "domain_name",
+  "_users"."domain_short_name" AS "domain_short_name",
+  "_users"."site_id" AS "site_id",
+  "_http_requests"."controller" AS "controller",
+  "_http_requests"."action" AS "action",
+  "_http_requests"."http_referer" AS "http_referer",
+  "_http_requests"."http_user_agent" AS "http_user_agent",
+  CAST("_http_requests"."http_request_uri" AS TEXT) AS "http_request_uri",
+  "_http_requests"."remote_ip" AS "remote_ip",
+  "_http_requests"."created_at" AS "created_at",
+  "_http_requests"."session_id" AS "session_id",
+  "_http_requests"."completed_at" AS "completed_at",
+  "_http_requests"."port" AS "port",
+  "_http_requests"."user_id" AS "user_id",
+  "_http_requests"."worker" AS "worker",
+  CAST("_http_requests"."vizql_session" AS TEXT) AS "vizql_session",
+  "_http_requests"."user_ip" AS "user_ip",
+  "_http_requests"."currentsheet" AS "currentsheet",
+  "_http_requests"."site_id" AS "site_id (_http_requests)",
+  "_sessions"."session_id" AS "session_id (_sessions)",
+  "_sessions"."updated_at" AS "updated_at",
+  "_sessions"."user_id" AS "user_id (_sessions)",
+  "_sessions"."user_name" AS "user_name",
+  "_sessions"."system_user_id" AS "system_user_id (_sessions)",
+  "_sessions"."site_id" AS "site_id (_sessions)",
+  "_sites"."id" AS "id (_sites)",
+  "_sites"."name" AS "name (_sites)",
+  "_sites"."url_namespace" AS "url_namespace",
+  "_sites"."status" AS "status"
+FROM "public"."_users" "_users"
+  RIGHT JOIN "public"."_http_requests" "_http_requests" ON ("_users"."id" = "_http_requests"."user_id")
+  LEFT JOIN "public"."_sessions" "_sessions" ON ("_http_requests"."session_id" = "_sessions"."session_id")
+  LEFT JOIN "public"."_sites" "_sites" ON ("_http_requests"."site_id" = "_sites"."id")

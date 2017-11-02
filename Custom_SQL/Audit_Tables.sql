@@ -66,7 +66,32 @@ SELECT "historical_events"."id" AS "id",
   CAST("hist_comments"."comment" AS TEXT) AS "comment",
   "hist_projects"."id" AS "id (hist_projects)",
   "hist_projects"."project_id" AS "project_id",
-  CAST("hist_projects"."name" AS TEXT) AS "name (hist_projects)"
+  CAST("hist_projects"."name" AS TEXT) AS "name (hist_projects)",
+  "desktop_reporting"."id" AS "id (desktop_reporting)",
+  "desktop_reporting"."app_version" AS "app_version",
+  "desktop_reporting"."email" AS "email (desktop_reporting)",
+  "desktop_reporting"."expiration_date" AS "expiration_date",
+  "desktop_reporting"."first_name" AS "first_name",
+  "desktop_reporting"."last_name" AS "last_name",
+  "desktop_reporting"."computer_user_id" AS "computer_user_id",
+  "desktop_reporting"."host_name" AS "host_name",
+  "desktop_reporting"."department" AS "department",
+  "desktop_reporting"."company" AS "company",
+  "desktop_reporting"."os_version" AS "os_version",
+  "desktop_reporting"."os_architecture" AS "os_architecture",
+  "desktop_reporting"."registration_date" AS "registration_date",
+  "desktop_reporting"."last_report_date" AS "last_report_date",
+  "desktop_reporting"."maintenance_expiration" AS "maintenance_expiration",
+  "desktop_reporting"."product_name" AS "product_name",
+  "desktop_reporting"."edition" AS "edition",
+  "desktop_reporting"."type" AS "type",
+  "desktop_reporting"."product_keys" AS "product_keys",
+  "desktop_reporting"."serial_number" AS "serial_number",
+  "desktop_reporting"."mac_address" AS "mac_address",
+  "desktop_reporting"."domain" AS "domain",
+  "desktop_reporting"."unique_machine_number" AS "unique_machine_number",
+  "desktop_reporting"."action" AS "action",
+  "desktop_reporting"."action_key" AS "action_key"
 FROM "public"."historical_events" "historical_events"
   INNER JOIN "public"."historical_event_types" "historical_event_types" ON ("historical_events"."historical_event_type_id" = "historical_event_types"."type_id")
   LEFT JOIN "public"."hist_datasources" "hist_datasources" ON ("historical_events"."hist_datasource_id" = "hist_datasources"."id")
@@ -76,3 +101,4 @@ FROM "public"."historical_events" "historical_events"
   LEFT JOIN "public"."hist_sites" "hist_sites" ON ("historical_events"."hist_actor_site_id" = "hist_sites"."id")
   LEFT JOIN "public"."hist_comments" "hist_comments" ON ("historical_events"."hist_comment_id" = "hist_comments"."id")
   LEFT JOIN "public"."hist_projects" "hist_projects" ON ("historical_events"."hist_project_id" = "hist_projects"."id")
+  LEFT JOIN "public"."desktop_reporting" "desktop_reporting" ON ("historical_events"."id" = "desktop_reporting"."id")

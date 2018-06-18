@@ -757,7 +757,7 @@ INNER JOIN remote_agents T233 ON T55.remote_query_agent_id = T233.id
 LEFT JOIN extracts T68 ON T55.id = T68.datasource_id
 LEFT JOIN hist_datasources T83 ON T55.id = T83.datasource_id
 LEFT JOIN most_recent_refreshes T116 ON T55.id = T116.datasource_id
-LEFT JOIN next_gen_permissions T120 ON T55.id = T120.authorizable_id AND next_gen_permissions.authorizable_type = 'Datasource'
+LEFT JOIN next_gen_permissions T120 ON T55.id = T120.authorizable_id AND T120.authorizable_type = 'Datasource'
 INNER JOIN _datasources_stats T5 ON T55.id = T5.datasource_id
 ---------------------------------------------------
 -- Table deleted_objects
@@ -933,7 +933,7 @@ INNER JOIN users T290 ON T78.owner_id = T290.id
 INNER JOIN domains T60 ON T78.domain_id = T60.id
 INNER JOIN sites T259 ON T78.site_id = T259.id
 LEFT JOIN hist_groups T84 ON T78.id = T84.group_id
-LEFT JOIN next_gen_permissions T120 ON T78.id = T120.grantee_id AND next_gen_permissions.next_gen_permissions.grantee_type = 'Group'
+LEFT JOIN next_gen_permissions T120 ON T78.id = T120.grantee_id AND T120.T120.grantee_type = 'Group'
 LEFT JOIN permissions_templates T126 ON T78.id = T126.grantee_id AND permissions_templates.grantee_type = 'Group'
 ---------------------------------------------------
 -- Table hist_capabilities
@@ -1456,12 +1456,12 @@ T120.id AS "Id (Next Gen Perm)",
 T120.permission AS "Permission (Next Gen Perm)"
 FROM
 next_gen_permissions T120
-LEFT JOIN workbooks T301 ON T120.authorizable_id = T301.id AND next_gen_permissions.authorizable_type = 'Workbook'
-LEFT JOIN projects T227 ON T120.authorizable_id = T227.id AND next_gen_permissions.authorizable_type = 'Project'
-LEFT JOIN views T297 ON T120.authorizable_id = T297.id AND next_gen_permissions.authorizable_type = 'View'
-LEFT JOIN datasources T55 ON T120.authorizable_id = T55.id AND next_gen_permissions.authorizable_type = 'Datasource'
-LEFT JOIN users T290 ON T120.grantee_id = T290.id AND next_gen_permissions.next_gen_permissions.grantee_type = 'User'
-LEFT JOIN groups T78 ON T120.grantee_id = T78.id AND next_gen_permissions.next_gen_permissions.grantee_type = 'Group'
+LEFT JOIN workbooks T301 ON T120.authorizable_id = T301.id AND T120.authorizable_type = 'Workbook'
+LEFT JOIN projects T227 ON T120.authorizable_id = T227.id AND T120.authorizable_type = 'Project'
+LEFT JOIN views T297 ON T120.authorizable_id = T297.id AND T120.authorizable_type = 'View'
+LEFT JOIN datasources T55 ON T120.authorizable_id = T55.id AND T120.authorizable_type = 'Datasource'
+LEFT JOIN users T290 ON T120.grantee_id = T290.id AND T120.T120.grantee_type = 'User'
+LEFT JOIN groups T78 ON T120.grantee_id = T78.id AND T120.T120.grantee_type = 'Group'
 INNER JOIN capabilities T30 ON T120.capability_id = T30.id
 ---------------------------------------------------
 -- Table oauth_request_tokens
@@ -1550,7 +1550,7 @@ FROM
 projects T227
 INNER JOIN datasources T55 ON T227.id = T55.project_id
 LEFT JOIN hist_projects T86 ON T227.id = T86.project_id
-LEFT JOIN next_gen_permissions T120 ON T227.id = T120.authorizable_id AND next_gen_permissions.authorizable_type = 'Project'
+LEFT JOIN next_gen_permissions T120 ON T227.id = T120.authorizable_id AND T120.authorizable_type = 'Project'
 INNER JOIN permissions_templates T126 ON T227.id = T126.project_id
 INNER JOIN users T290 ON T227.owner_id = T290.id
 INNER JOIN sites T259 ON T227.site_id = T259.id
@@ -2197,7 +2197,7 @@ INNER JOIN http_requests T97 ON T290.id = T97.user_id
 INNER JOIN http_requests T97 ON T290.id = T97.owner_id
 INNER JOIN mobile_enrollments T113 ON T290.id = T113.user_id
 INNER JOIN mru_lists T118 ON T290.id = T118.user_id
-LEFT JOIN next_gen_permissions T120 ON T290.id = T120.grantee_id AND next_gen_permissions.next_gen_permissions.grantee_type = 'User'
+LEFT JOIN next_gen_permissions T120 ON T290.id = T120.grantee_id AND T120.T120.grantee_type = 'User'
 LEFT JOIN permissions_templates T126 ON T290.id = T126.grantee_id AND permissions_templates.grantee_type = 'User'
 INNER JOIN projects T227 ON T290.id = T227.owner_id
 INNER JOIN remote_agents T233 ON T290.id = T233.owner_id
@@ -2299,7 +2299,7 @@ INNER JOIN customized_views T46 ON T297.id = T46.start_view_id
 INNER JOIN data_alerts T47 ON T297.id = T47.view_id
 LEFT JOIN hist_views T92 ON T297.id = T92.view_id
 INNER JOIN http_requests T97 ON T297.view_url = T97.currentsheet
-LEFT JOIN next_gen_permissions T120 ON T297.id = T120.authorizable_id AND next_gen_permissions.authorizable_type = 'View'
+LEFT JOIN next_gen_permissions T120 ON T297.id = T120.authorizable_id AND T120.authorizable_type = 'View'
 INNER JOIN sheet_images T251 ON T297.id = T251.view_id
 INNER JOIN user_default_customized_views T284 ON T297.id = T284.view_id
 INNER JOIN view_metrics_aggregations T293 ON T297.id = T293.view_id
@@ -2405,7 +2405,7 @@ LEFT JOIN datasources T55 ON T301.id = T55.parent_workbook_id
 LEFT JOIN extracts T68 ON T301.id = T68.workbook_id
 LEFT JOIN hist_workbooks T93 ON T301.id = T93.workbook_id
 LEFT JOIN most_recent_refreshes T116 ON T301.id = T116.workbook_id
-LEFT JOIN next_gen_permissions T120 ON T301.id = T120.authorizable_id AND next_gen_permissions.authorizable_type = 'Workbook'
+LEFT JOIN next_gen_permissions T120 ON T301.id = T120.authorizable_id AND T120.authorizable_type = 'Workbook'
 INNER JOIN views T297 ON T301.id = T297.workbook_id
 INNER JOIN workbook_checksums T299 ON T301.id = T299.workbook_id
 INNER JOIN workbook_versions T300 ON T301.id = T300.workbook_id

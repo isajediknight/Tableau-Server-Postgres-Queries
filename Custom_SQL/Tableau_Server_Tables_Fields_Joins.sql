@@ -2368,7 +2368,7 @@ T301.default_view_index AS "Default_View_Index (WB)",
 T301.description AS "Description (WB)",
 T301.display_tabs AS "Display_Tabs (WB)",
 T301.document_version AS "Document_Version (WB)",
-T301.embedded AS "Embedded (WB)",
+--T301.embedded AS "Embedded (WB)",--Possible this field exceeds 8000 characters resulting in Postgres Error -- Github Issue #2
 T301.extracts_incremented_at AS "Extracts_Incremented_At (WB)",
 T301.extracts_refreshed_at AS "Extracts_Refreshed_At (WB)",
 T301.first_published_at AS "First_Published_At (WB)",

@@ -196,6 +196,7 @@ T9.active AS "Active (_Sched)",
 T9.created_at AS "Created_At (_Sched)",
 T9.day_of_month_mask AS "Day_Of_Month_Mask (_Sched)",
 T9.day_of_week_mask AS "Day_Of_Week_Mask (_Sched)",
+T9.defined_by AS "Defined By (_Sched)",
 T9.end_at_minute AS "End_At_Minute (_Sched)",
 T9.end_schedule_at AS "End_Schedule_At (_Sched)",
 T9.hidden AS "Hidden (_Sched)",
@@ -386,6 +387,19 @@ INNER JOIN system_users T271 ON T18.system_user_id = T271.id
 INNER JOIN sites T259 ON T18.site_id = T259.id
 INNER JOIN domains T60 ON T18.domain_id = T60.id
 ---------------------------------------------------
+-- Table api_tokens
+SELECT DISTINCT
+T303.client_name AS "Client Name (API Tokens)",
+T303.created_timestamp AS "Created Timestamp (API Tokens)",
+T303.hashed_secret AS "Hashed Secret (API Tokens)",
+T303.id AS "Id  (API Tokens)",
+T303.revoked_timestamp AS "Revoked Timestamp (API Tokens)",
+T303.scope AS "Scope (API Tokens)",
+T303.token_id AS "Token Id (API Tokens)",
+T303.user_id AS "User Id (API Tokens)"
+FROM
+api_tokens T303
+---------------------------------------------------
 -- Table asset_key_marker
 SELECT DISTINCT
 T21.asset_key_id AS "Asset_Key_ID (Asset Key Marker)",
@@ -479,11 +493,13 @@ T28.created_on_worker AS "Created_On_Worker (BG Jobs)",
 T28.finish_code AS "Finish_Code (BG Jobs)",
 T28.id AS "Id (BG Jobs)",
 T28.job_name AS "Job_Name (BG Jobs)",
+T28.job_rank AS "Job_Rank (BG Jobs)",
 T28.job_type AS "Job_Type (BG Jobs)",
 T28.language AS "Language (BG Jobs)",
 T28.link AS "Link (BG Jobs)",
 T28.locale AS "Locale (BG Jobs)",
 T28.lock_version AS "Lock_Version (BG Jobs)",
+T28.luid AS "LUID (BG Jobs)",
 T28.notes AS "Notes (BG Jobs)",
 T28.priority AS "Priority (BG Jobs)",
 T28.processed_on_worker AS "Processed_On_Worker (BG Jobs)",
@@ -498,6 +514,16 @@ FROM
 background_jobs T28
 INNER JOIN sites T259 ON T28.site_id = T259.id
 INNER JOIN subscriptions T267 ON T28.correlation_id = T267.id
+---------------------------------------------------
+-- Table background_jobs_cancel
+SELECT DISTINCT
+T304.background_job_id AS "Background_Job_Id (BG Jobs Cancel)",
+T304.created_at AS "Created_At (BG Jobs Cancel)",
+T304.id AS "ID (BG Jobs Cancel)",
+T304.updated_at AS "Updated_At (BG Jobs Cancel)",
+T304.user_id AS "USer_ID (BG Jobs Cancel)"
+FROM
+background_jobs_cancel T304
 ---------------------------------------------------
 -- Table big_texts
 SELECT DISTINCT
@@ -530,6 +556,15 @@ capability_roles T31
 INNER JOIN capabilities T30 ON T31.capability_id = T30.id
 INNER JOIN roles T240 ON T31.role_id = T240.id
 ---------------------------------------------------
+-- Table capability_roles
+SELECT DISTINCT
+T305.attachment_id AS "Attachment_Id (Comment Attch)",
+T305.attachment_type AS "Attachment_Type (Comment Attch)",
+T305.comment_id AS "Comment_Id (Comment Attch)",
+T305.id AS "ID (Comment Attch)"
+FROM
+comment_attachments T305
+---------------------------------------------------
 -- Table comments
 SELECT DISTINCT
 T42.comment AS "Comment (Comments)",
@@ -561,6 +596,7 @@ T46.created_at AS "Created_At (Cust VW)",
 T46.creator_id AS "Creator_ID (Cust VW)",
 T46.data_id AS "Data_ID (Cust VW)",
 T46.description AS "Description (Cust VW)",
+T46.hidden AS "Hidden (Cust VW)",
 T46.id AS "Id (Cust VW)",
 T46.luid AS "Luid (Cust VW)",
 T46.name AS "Name (Cust VW)",
@@ -589,16 +625,21 @@ INNER JOIN user_default_customized_views T284 ON T46.id = T284.customized_view_i
 ---------------------------------------------------
 -- Table data_alerts
 SELECT DISTINCT
+created_at AS "Created_At (Data Alerts)",
 T47.creator_id AS "Creator_ID (Data Alerts)",
 T47.customized_view_id AS "Customized_View_ID (Data Alerts)",
-T47.data_condition AS "Data_Condition (Data Alerts)",
 T47.data_specification AS "Data_Specification (Data Alerts)",
+device_type AS "Device_Type (Data Alerts)",
+failure_count AS "Failure_Count (Data Alerts)",
 T47.id AS "Id (Data Alerts)",
-T47.last_triggered AS "Last_Triggered (Data Alerts)",
+last_checked AS "Last_Checked (Data Alerts)",
+last_edited AS "Last_Edited (Data Alerts)",
 T47.luid AS "Luid (Data Alerts)",
-T47.schedule_id AS "Schedule_ID (Data Alerts)",
+notification_interval_in_minutes AS "Notification_Int_Mins (Data Alerts)",
 T47.site_id AS "Site_ID (Data Alerts)",
+suspend_state AS "Suspend_State (Data Alerts)",
 T47.title AS "Title (Data Alerts)",
+updated_at AS "Updated_At (Data Alerts)",
 T47.view_id AS "View_ID (Data Alerts)",
 T47.workbook_id AS "Workbook_ID (Data Alerts)"
 FROM
@@ -608,10 +649,14 @@ LEFT JOIN data_alerts_recipients T48 ON T47.id = T48.data_alert_id
 ---------------------------------------------------
 -- Table data_alerts_recipients
 SELECT DISTINCT
+T48.created_at AS "Created_At (Data Alert Recip)",
 T48.data_alert_id AS "Data_Alert_ID (Data Alert Recip)",
 T48.id AS "Id (Data Alert Recip)",
+T48.last_sent AS "Last_Sent (Data Alert Recip)",
+T48.last_state AS "Last_State (Data Alert Recip)",
 T48.recipient_id AS "Recipient_ID (Data Alert Recip)",
-T48.recipient_type AS "Recipient_Type (Data Alert Recip)"
+T48.recipient_type AS "Recipient_Type (Data Alert Recip)",
+T48.updated_at AS "Updated_At (Data Alert Recip)"
 FROM
 data_alerts_recipients T48
 LEFT JOIN data_alerts T47 ON T48.data_alert_id = T47.id
@@ -657,6 +702,28 @@ T51.updated_at AS "Updated_At (DE Config)"
 FROM
 dataengine_configurations T51
 ---------------------------------------------------
+-- Table datasource_events
+SELECT DISTINCT
+T306.datasource_id AS "Datasource_ID (DS Events)",
+T306.event_time AS "Event_Time (DS Events)",
+T306.event_type AS "Event_Type (DS Events)",
+T306.id AS "ID (DS Events)",
+T306.site_id AS " Site_ID (DS Events)"
+FROM
+datasource_events T306
+---------------------------------------------------
+-- Table datasource_fields
+SELECT DISTINCT
+T307.created_at AS "Created_At (DS Fields)",
+T307.datasource_id AS "Datasource_ID (DS Fields)",
+T307.field_data AS "Field_Data (DS Fields)",
+T307.guid AS "GUID (DS Fields)",
+T307.id AS "ID (DS Fields)",
+T307.site_id AS "Site_ID (DS Fields)",
+T307.updated_at AS "Updated_At (DS Fields)"
+FROM
+datasource_fields T307
+---------------------------------------------------
 -- Table datasource_metrics_aggregations
 SELECT DISTINCT
 T52.datasource_id AS "Datasource_ID (DS Metric Agg)",
@@ -671,6 +738,7 @@ INNER JOIN datasources T55 ON T52.datasource_id = T55.id
 ---------------------------------------------------
 -- Table datasource_refresh_properties
 SELECT DISTINCT
+T53.expected_refresh_time AS "Expected_Refresh_Time (DS Ref Prop)",
 T53.failure_notification_history AS "Failure_Notification_History (DS Ref Prop)",
 T53.id AS "Id (DS Ref Prop)",
 T53.last_refresh_error AS "Last_Refresh_Error (DS Ref Prop)",
@@ -684,6 +752,14 @@ FROM
 datasource_refresh_properties T53
 LEFT JOIN remote_agents T233 ON T53.remote_agent_id = T233.id
 LEFT JOIN datasources T55 ON T53.id = T55.id
+---------------------------------------------------
+-- Table datasource_remote_query_agent
+SELECT DISTINCT
+T308.agent_id AS "Agent_ID (DS Rem Q Agent)",
+T308.datasource_id AS "Datasource_ID (DS Rem Q Agent)",
+T308.id AS "ID (DS Rem Q Agent)"
+FROM
+datasource_remote_query_agent T308
 ---------------------------------------------------
 -- Table datasource_versions
 SELECT DISTINCT
@@ -707,6 +783,9 @@ INNER JOIN datasources T55 ON T54.datasource_id = T55.id
 -- Table datasources
 SELECT DISTINCT
 T55.asset_key_id AS "Asset_Key_ID (DS)",
+T55.certification_note AS "Cert_Note (DS)",
+T55.certifier_details AS "Cert_Details (DS)",
+T55.certifier_user_id AS "Cert_User (DS)",
 T55.connectable AS "Connectable (DS)",
 T55.content_version AS "Content_Version (DS)",
 T55.created_at AS "Created_At (DS)",
@@ -717,6 +796,7 @@ T55.db_name AS "Db_Name (DS)",
 T55.description AS "Description (DS)",
 T55.document_version AS "Document_Version (DS)",
 T55.embedded AS "Embedded (DS)",
+T55.extract_encryption_state AS "Extracts_Enc_State (DS)",
 T55.extracts_incremented_at AS "Extracts_Incremented_At (DS)",
 T55.extracts_refreshed_at AS "Extracts_Refreshed_At (DS)",
 T55.first_published_at AS "First_Published_At (DS)",
@@ -744,6 +824,7 @@ T55.size AS "Size (DS)",
 T55.state AS "State (DS)",
 T55.table_name AS "Table_Name (DS)",
 T55.updated_at AS "Updated_At (DS)",
+T55.using_remote_query_agent AS "Using_Rem_Q_Agent (DS)",
 CASE T55.connectable WHEN true THEN false ELSE true END AS "Embedded_In_Workbook (DS)" ,
 -- <--- BEGIN OPTIONAL ALL DATASOURCES COLUMNS --->
 -- Include to get all Datasources: Published and Embedded
@@ -846,6 +927,15 @@ INNER JOIN _datasources T4 ON T60.id = T4.domain_id
 INNER JOIN _users T15 ON T60.id = T15.domain_id
 INNER JOIN _workbooks T18 ON T60.id = T18.domain_id
 ---------------------------------------------------
+-- Table dynamic_configs
+SELECT DISTINCT
+T309.app AS "App (Dynamic Configs)",
+T309.id AS "ID (Dynamic Configs)",
+T309.key AS "Key (Dynamic Configs)",
+T309.value AS "Value (Dynamic Configs)"
+FROM
+dynamic_configs T309
+---------------------------------------------------
 -- Table exportable_repository_id_columns
 SELECT DISTINCT
 T63.exportable_table_id AS "Exportable_Table_ID (Exp Rep ID Cols)",
@@ -881,6 +971,102 @@ T66.name AS "Name (Exp Types)"
 FROM
 exportable_types T66
 ---------------------------------------------------
+-- Table extensions_block_list
+SELECT DISTINCT
+T310.active AS "Active (Ext Block List)",
+T310.created_at AS "Created_At (Ext Block List)",
+T310.luid AS "LUID (Ext Block List)",
+T310.updated_at AS "Updated_At (Ext Block List)",
+T310.url AS "URL (Ext Block List)"
+FROM
+extensions_block_list T310
+---------------------------------------------------
+-- Table extensions_events
+SELECT DISTINCT
+T311.created_at AS "Created_At (Ext Events)",
+T311.luid AS "LUID (Ext Events)",
+T311.site_id AS "Site_ID (Ext Events)",
+T311.site_luid AS "Site_LUID (Ext Events)",
+T311.status AS "Status (Ext Events)",
+T311.updated_at AS "Updated_At (Ext Events)",
+T311.workbook_luid AS "Workbook_LUID (Ext Events)"
+FROM
+extensions_events T311
+---------------------------------------------------
+-- Table extensions_instances
+SELECT DISTINCT
+T312.active AS "Active (Ext_Instances)",
+T312.count AS "Count (Ext_Instances)",
+T312.created_at AS "Created_At (Ext_Instances)",
+T312.extension_luid AS "Extension_LUID (Ext_Instances)",
+T312.id AS "ID (Ext_Instances)",
+T312.luid AS "LUID (Ext_Instances)",
+T312.site_id AS "Site_ID (Ext_Instances)",
+T312.site_luid AS "Site_LUID (Ext_Instances)",
+T312.updated_at AS "Updated_At (Ext_Instances)",
+T312.view_luid AS "View_LUID (Ext_Instances)",
+T312.workbook_luid AS "Workbook_LUID (Ext_Instances)"
+FROM
+extensions_instances T312
+---------------------------------------------------
+-- Table extensions_metadata
+SELECT DISTINCT
+T313.author_email AS "Author_Email (Ext_Metadata)",
+T313.author_name AS "Author_Name (Ext_Metadata)",
+T313.author_org AS "Author_Org (Ext_Metadata)",
+T313.author_website AS "Author_Website (Ext_Metadata)",
+T313.created_at AS "Created_At (Ext_Metadata)",
+T313.dec_locale_resourceid AS "Dec_Locale_Resource_ID (Ext_Metadata)",
+T313.default_locale AS "Default_Locale (Ext_Metadata)",
+T313.desc_locale_value AS "Desc_Locale_Value (Ext_Metadata)",
+T313.extension_id AS "Extension_ID (Ext_Metadata)",
+T313.icon AS "Icon (Ext_Metadata)",
+T313.id AS "ID (Ext_Metadata)",
+T313.installed AS "Installed (Ext_Metadata)",
+T313.luid AS "LUID (Ext_Metadata)",
+T313.manifest_version AS "Manifest_Version (Ext_Metadata)",
+T313.min_api_version AS "Min_Api_Version (Ext_Metadata)",
+T313.name_locale_resourceid AS "Name_Locale_Resource_ID (Ext_Metadata)",
+T313.name_locale_value AS "Name_Locale_Value (Ext_Metadata)",
+T313.permissions AS "Permissions (Ext_Metadata)",
+T313.resources AS "Resources (Ext_Metadata)",
+T313.site_id AS "Site_ID (Ext_Metadata)",
+T313.site_luid AS "Site_LUID (Ext_Metadata)",
+T313.type AS "Type (Ext_Metadata)",
+T313.updated_at AS "Updated_At (Ext_Metadata)",
+T313.url AS "URL (Ext_Metadata)",
+T313.version AS "Version (Ext_Metadata)"
+FROM
+extensions_metadata T313
+---------------------------------------------------
+-- Table extensions_safe_list
+SELECT DISTINCT
+T314.active AS "Active (Ext Safe List)",
+T314.allow_full_data AS "Allow_Full_Data (Ext Safe List)",
+T314.created_at AS "Created_At (Ext Safe List)",
+T314.id AS "ID (Ext Safe List)",
+T314.luid AS "LUID (Ext Safe List)",
+T314.prompt_needed AS "Prompt_Needed (Ext Safe List)",
+T314.site_id AS "Site_ID (Ext Safe List)",
+T314.site_luid AS "Site_LUID (Ext Safe List)",
+T314.updated_at AS "Updated_At (Ext Safe List)",
+T314.url AS "URL (Ext Safe List)"
+FROM
+extensions_safe_list T314
+---------------------------------------------------
+-- Table extensions_site_settings
+SELECT DISTINCT
+T315.active AS " (Ext Site Settings)",
+T315.default_setting AS "Default_Setting (Ext Site Settings)",
+T315.extensions_enabled AS "Ext Enabled (Ext Site Settings)",
+T315.id AS "ID (Ext Site Settings)",
+T315.luid AS "LUID (Ext Site Settings)",
+T315.site_id AS "Site_ID (Ext Site Settings)",
+T315.site_luid AS "Site_LUID (Ext Site Settings)",
+T315.updated_at AS "Updated_At (Ext Site Settings)"
+FROM
+extensions_site_settings T315
+---------------------------------------------------
 -- Table extract_sessions
 SELECT DISTINCT
 T67.created_at AS "Created_At (Extract Sess)",
@@ -897,6 +1083,7 @@ SELECT DISTINCT
 T68.created_at AS "Created_At (Extracts)",
 T68.datasource_id AS "Datasource_ID (Extracts)",
 T68.descriptor AS "Descriptor (Extracts)",
+T68.encryption_key_id AS "Enc_Key_ID (Extracts)",
 T68.id AS "Id (Extracts)",
 T68.updated_at AS "Updated_At (Extracts)",
 T68.workbook_id AS "Workbook_ID (Extracts)"
@@ -904,6 +1091,18 @@ FROM
 extracts T68
 LEFT JOIN workbooks T301 ON T68.workbook_id = T301.id
 LEFT JOIN datasources T55 ON T68.datasource_id = T55.id
+---------------------------------------------------
+-- Table field_concepts
+SELECT DISTINCT
+T316.created_at AS "Created_At (Field Concepts)",
+--T316.data AS "Data (Field Concepts)",--Errors when included
+T316.field_concept_id AS "Field_Concept_ID (Field Concepts)",
+T316.id AS "ID (Field Concepts)",
+T316.object_concept_id AS "Object_Concept_ID (Field Concepts)",
+T316.ontology_id AS "Ontology_ID (Field Concepts)",
+T316.updated_at AS "Updated_At (Field Concepts)"
+FROM
+field_concepts T316
 ---------------------------------------------------
 -- Table file_uploads
 SELECT DISTINCT
@@ -917,6 +1116,136 @@ T69.updated_at AS "Updated_At (File UPL)",
 T69.upload_id AS "Upload_ID (File UPL)"
 FROM
 file_uploads T69
+---------------------------------------------------
+-- Table flow_input_steps
+SELECT DISTINCT
+T317.data_connection_id AS "Data_Connection_ID (Flow Input Steps)",
+T317.flow_id AS "Flow_ID (Flow Input Steps)",
+T317.id AS "ID (Flow Input Steps)",
+T317.luid AS "LUID (Flow Input Steps)",
+T317.name AS "Name (Flow Input Steps)",
+T317.site_id AS "Site_ID (Flow Input Steps)",
+T317.step_id AS "Step_ID (Flow Input Steps)"
+FROM
+flow_input_steps T317
+---------------------------------------------------
+-- Table flow_output_step_runs
+SELECT DISTINCT
+T318.completed_at AS "Completed_At (Flow Output Step Runs)",
+T318.finish_code AS "Finish_Code (Flow Output Step Runs)",
+T318.flow_id AS "Flow_ID (Flow Output Step Runs)",
+T318.flow_output_step_id AS "Flow_Output_Step_ID (Flow Output Step Runs)",
+T318.flow_run_id AS "Flow_Run_ID (Flow Output Step Runs)",
+T318.id AS "ID (Flow Output Step Runs)",
+T318.notes AS "Notes (Flow Output Step Runs)",
+T318.progress AS "Progress (Flow Output Step Runs)",
+T318.rows_produced AS "Rows_Produced (Flow Output Step Runs)",
+T318.started_at AS "Started_At (Flow Output Step Runs)"
+FROM
+flow_output_step_runs T318
+---------------------------------------------------
+-- Table flow_output_steps
+SELECT DISTINCT
+T319.data_connection_id AS "Data_Connection_ID (Flow Output Steps)",
+T319.flow_id AS "Flow_ID (Flow Output Steps)",
+T319.id AS "ID (Flow Output Steps)",
+T319.is_deleted AS "Is_Deleted (Flow Output Steps)",
+T319.luid AS "LUID (Flow Output Steps)",
+T319.name AS "Name (Flow Output Steps)",
+T319.site_id AS "Site_ID (Flow Output Steps)",
+T319.step_id AS "Step_ID (Flow Output Steps)"
+FROM
+flow_output_steps T319
+---------------------------------------------------
+-- Table flow_run_errors
+SELECT DISTINCT
+T320.error_type AS "Error_Type (Flow_Run_Errors)",
+T320.flow_id AS "Flow_ID (Flow_Run_Errors)",
+T320.flow_output_step_id AS "Flow_Output_Step_ID (Flow_Run_Errors)",
+T320.flow_output_step_run_id AS "Flow_Output_Step_Run_ID (Flow_Run_Errors)",
+T320.flow_run_id AS "Flow_Run_ID (Flow_Run_Errors)",
+T320.id AS "ID (Flow_Run_Errors)",
+T320.object_id AS "Object_ID (Flow_Run_Errors)",
+T320.object_name AS "Object_Name (Flow_Run_Errors)",
+T320.object_type AS "Object_Type (Flow_Run_Errors)"
+FROM
+flow_run_errors T320
+---------------------------------------------------
+-- Table flow_run_spec_output_steps
+SELECT DISTINCT
+T321.flow_output_step_id AS "Flow_Output_Step_ID (Flow Run Spec Output Steps)",
+T321.flow_run_spec_id AS "Flow_Run_Spec_ID (Flow Run Spec Output Steps)",
+T321.id AS "ID (Flow Run Spec Output Steps)",
+T321.luid AS "LUID (Flow Run Spec Output Steps)",
+T321.site_id AS "Site_ID (Flow Run Spec Output Steps)"
+FROM
+flow_run_spec_output_steps T321
+---------------------------------------------------
+-- Table flow_run_specs
+SELECT DISTINCT
+T322.flow_id AS "Flow_ID (Flow Run Specs)",
+T322.id "ID (Flow Run Specs)",
+T322.luid "LUID (Flow Run Specs)",
+T322.run_all_outputs "Run_All_Outputs (Flow Run Specs)",
+T322.site_id "Site_ID (Flow Run Specs)",
+T322.trigger_type "Trigger_Type (Flow Run Specs)"
+FROM
+flow_run_specs T322
+---------------------------------------------------
+-- Table flow_runs
+SELECT DISTINCT
+T323.completed_at AS "Completed_At (Flow Runs)",
+T323.finish_code AS "Finish_Code (Flow Runs)",
+T323.flow_id AS "Flow_ID (Flow Runs)",
+T323.flow_processor_run_id AS "Flow_Processor_Run_ID (Flow Runs)",
+T323.flow_run_spec_id AS "Flow_Run_Spec_ID (Flow Runs)",
+T323.id AS "ID (Flow Runs)",
+T323.notes AS "Notes (Flow Runs)",
+T323.progress AS " (Flow Runs)",
+T323.started_at AS "Started_At (Flow Runs)",
+T323.task_id AS "Task_ID (Flow Runs)",
+T323.trigger_type AS "Trigger_Type (Flow Runs)"
+FROM
+flow_runs T323
+---------------------------------------------------
+-- Table flow_versions
+SELECT DISTINCT
+T324.content_key AS "Content_Key (Flow Versions)",
+T324.flow_id AS "Flow_ID (Flow Versions)",
+T324.id AS "ID (Flow Versions)",
+T324.published_at AS "Published_At (Flow Versions)",
+T324.publisher_id AS "Publisher_ID (Flow Versions)",
+T324.site_id AS "Site_ID (Flow Versions)",
+T324.size AS "Size (Flow Versions)",
+T324.sos_type AS "Sos_Type (Flow Versions)",
+T324.version_number AS "Version_Number (Flow Versions)"
+FROM
+flow_versions T324
+---------------------------------------------------
+-- Table flows
+SELECT DISTINCT
+T325.asset_key_id AS "Asset_Key_ID (Flows)",
+T325.content_version AS "Content_Version (Flows)",
+T325.created_at AS "Created_At (Flows)",
+T325.data_id AS "Data_ID (Flows)",
+T325.description AS "Description (Flows)",
+T325.document_version AS "Document_Version (Flows)",
+T325.embedded AS "Embedded (Flows)",
+T325.file_type AS "File_Type (Flows)",
+T325.id AS "ID (Flows)",
+T325.last_published_at AS "Last_Published_At (Flows)",
+T325.lock_version AS "Lock_Version (Flows)",
+T325.luid AS "LUID (Flows)",
+T325.name AS "Name (Flows)",
+T325.owner_id AS "Owner_ID (Flows)",
+T325.project_id AS "Project_ID (Flows)",
+T325.reduced_data_id AS "Reduced_Data_ID (Flows)",
+T325.site_id AS "Site_ID (Flows)",
+T325.size AS "Size (Flows)",
+T325.thumbnail_id AS "Thumbnail_ID (Flows)",
+T325.updated_at AS "Updated_At (Flows)"
+FROM
+flows T325
 ---------------------------------------------------
 -- Table global_settings
 SELECT DISTINCT
@@ -952,6 +1281,7 @@ T78.id AS "Id (Groups)",
 T78.last_synchronized AS "Last_Synchronized (Groups)",
 T78.luid AS "Luid (Groups)",
 T78.minimum_site_role AS "Minimum_Site_Role (Groups)",
+T78.minimum_site_role_id AS "Minimum_Site_Role_ID (Groups)",
 T78.name AS "Name (Groups)",
 T78.owner_id AS "Owner_ID (Groups)",
 T78.site_id AS "Site_ID (Groups)",
@@ -1012,12 +1342,16 @@ INNER JOIN historical_events T96 ON T82.id = T96.hist_data_connection_id
 ---------------------------------------------------
 -- Table hist_datasources
 SELECT DISTINCT
+T83.certification_note AS "Certification_Note (Hist DS)",
 T83.datasource_id AS "Datasource_ID (Hist DS)",
 T83.id AS "Id (Hist DS)",
+T83.is_certified AS "Is_Certified (Hist DS)",
 T83.name AS "Name (Hist DS)",
+T83.remote_query_agent_name AS "Remote_Query_Agent_Name (Hist DS)",
 T83.repository_url AS "Repository_Url (Hist DS)",
 T83.revision AS "Revision (Hist DS)",
-T83.size AS "Size (Hist DS)"
+T83.size AS "Size (Hist DS)",
+T83.using_remote_query_agent AS "Using_Remote_Query_Agent (Hist DS)"
 FROM
 hist_datasources T83
 LEFT JOIN datasources T55 ON T83.datasource_id = T55.id
@@ -1054,6 +1388,14 @@ FROM
 hist_projects T86
 LEFT JOIN projects T227 ON T86.project_id = T227.id
 INNER JOIN historical_events T96 ON T86.id = T96.hist_project_id
+---------------------------------------------------
+-- Table hist_remote_agents
+SELECT DISTINCT
+T326.id AS "ID (Hist_Remote_Agents)",
+T326.name AS "Name (Hist_Remote_Agents)",
+T326.remote_agent_id AS "Remote_Agent_ID (Hist_Remote_Agents)"
+FROM
+hist_remote_agents T326
 ---------------------------------------------------
 -- Table hist_schedules
 SELECT DISTINCT
@@ -1117,6 +1459,7 @@ T91.id AS "Id (Hist Users)",
 T91.name AS "Name (Hist Users)",
 T91.publisher_tristate AS "Publisher_Tristate (Hist Users)",
 T91.site_admin_level AS "Site_Admin_Level (Hist Users)",
+T91.site_role_id AS "Site_Role_ID (Hist Users)",
 T91.system_admin_level AS "System_Admin_Level (Hist Users)",
 T91.system_user_id AS "System_User_ID (Hist Users)",
 T91.user_id AS "User_ID (Hist Users)"
@@ -1191,6 +1534,7 @@ T96.hist_datasource_id AS "Hist_Datasource_ID (Hist Events)",
 T96.hist_group_id AS "Hist_Group_ID (Hist Events)",
 T96.hist_licensing_role_id AS "Hist_Licensing_Role_ID (Hist Events)",
 T96.hist_project_id AS "Hist_Project_ID (Hist Events)",
+T96.hist_remote_agent_id AS "Hist_Remote_Agent_ID (Hist Events)",
 T96.hist_schedule_id AS "Hist_Schedule_ID (Hist Events)",
 T96.hist_tag_id AS "Hist_Tag_ID (Hist Events)",
 T96.hist_target_site_id AS "Hist_Target_Site_ID (Hist Events)",
@@ -1346,6 +1690,7 @@ language_prefs T108
 -- Table licensing_roles
 SELECT DISTINCT
 T109.id AS "Id (Lic Role)",
+T109.licensing_roles_count AS "Licensing_Roles_Count (Lic Role)",
 T109.name AS "Name (Lic Role)",
 T109.rank AS "Rank (Lic Role)"
 FROM
@@ -1374,6 +1719,31 @@ T111.site_id AS "Site_ID (Managed Keychains)",
 T111.updated_at AS "Updated_At (Managed Keychains)"
 FROM
 managed_keychains T111
+---------------------------------------------------
+-- Table mentions
+SELECT DISTINCT
+T327.comment_id AS "Comment_ID (Mentions)",
+T327.id AS "ID (Mentions)",
+T327.target_id AS "Target_ID (Mentions)",
+T327.target_type AS "Target_Type (Mentions)"
+FROM
+mentions T327
+---------------------------------------------------
+-- Table metrics
+SELECT DISTINCT
+T328.asset_key_id AS "Asset_Key_ID (Metrics)",
+T328.created_at AS "Created_At (Metrics)",
+T328.description AS "Description (Metrics)",
+T328.embedded AS "Embedded (Metrics)",
+T328.id AS "ID (Metrics)",
+T328.luid AS "LUID (Metrics)",
+T328.name AS "Name (Metrics)",
+T328.owner_id AS "Owner_ID (Metrics)",
+T328.project_id AS "Project_ID (Metrics)",
+T328.site_id AS "Site_ID (Metrics)",
+T328.updated_at AS "Updated_At (Metrics)"
+FROM
+metrics T328
 ---------------------------------------------------
 -- Table metrics_data
 SELECT DISTINCT
@@ -1509,6 +1879,17 @@ T121.updated_at AS "Updated_At (OAuth Req Tokens)"
 FROM
 oauth_request_tokens T121
 ---------------------------------------------------
+-- Table object_concepts
+SELECT DISTINCT
+T329.created_at AS "Created_At (Object Concepts)",
+--T329.data AS "Data (Object Concepts)",--Gives an error when included
+T329.id AS "ID (Object Concepts)",
+T329.object_concept_id AS "Object_Concept_ID (Object Concepts)",
+T329.ontology_id AS "Ontology_ID (Object Concepts)",
+T329.updated_at AS "Updated_At (Object Concepts)"
+FROM
+object_concepts T329
+---------------------------------------------------
 -- Table password_tokens
 SELECT DISTINCT
 T123.expires_at AS "Expires_At (Pass Tokens)",
@@ -1521,6 +1902,14 @@ FROM
 password_tokens T123
 LEFT JOIN system_users T271 ON T123.system_user_id = T271.id
 ---------------------------------------------------
+-- Table pending_search_update_items
+SELECT DISTINCT
+T330.id AS "ID (Pend Search Update Items)",
+T330.item_id AS "Item_ID (Pend Search Update Items)",
+T330.pending_search_update_id AS "Update_ID (Pend Search Update Items)"
+FROM
+pending_search_update_items T330
+---------------------------------------------------
 -- Table pending_search_updates
 SELECT DISTINCT
 T124.attempts AS "Attempts (Pend Search UPD)",
@@ -1528,6 +1917,7 @@ T124.created_at AS "Created_At (Pend Search UPD)",
 T124.entity_type AS "Entity_Type (Pend Search UPD)",
 T124.id AS "Id (Pend Search UPD)",
 T124.lock_version AS "Lock_Version (Pend Search UPD)",
+T124.next_attempt_at AS "Next_Attempt_At (Pend Search UPD)",
 T124.object_id AS "Object_ID (Pend Search UPD)",
 T124.operation AS "Operation (Pend Search UPD)",
 T124.updated_at AS "Updated_At (Pend Search UPD)"
@@ -1557,6 +1947,18 @@ LEFT JOIN users T290 ON T126.grantee_id = T290.id AND permissions_templates.gran
 LEFT JOIN groups T78 ON T126.grantee_id = T78.id AND permissions_templates.grantee_type = 'Group'
 INNER JOIN capabilities T30 ON T126.capability_id = T30.id
 ---------------------------------------------------
+-- Table pkce_tokens
+SELECT DISTINCT
+T331.authorization_code AS "Authorization_Code (PKCE Tokens)",
+T331.code_challenge AS "Code_Challenge (PKCE Tokens)",
+T331.code_challenge_method AS "Code_Challenge_Method (PKCE Tokens)",
+T331.expires_at AS "Expires_At (PKCE Tokens)",
+T331.id AS "ID (PKCE Tokens)",
+T331.redeemed_at AS "Redeemed_At (PKCE Tokens)",
+T331.user_id AS "User_ID (PKCE Tokens)"
+FROM
+pkce_tokens T331
+---------------------------------------------------
 -- Table postgres_heartbeat
 SELECT DISTINCT
 T226.id AS "Id (PSQL Heartbeat)",
@@ -1566,6 +1968,7 @@ postgres_heartbeat T226
 ---------------------------------------------------
 -- Table projects
 SELECT DISTINCT
+T227.admin_insights_enabled AS "Admin_Insights_Enabled (Projects)",
 T227.controlled_permissions_enabled AS "Controlled_Permissions_Enabled (Projects)",
 T227.created_at AS "Created_At (Projects)",
 T227.description AS "Description (Projects)",
@@ -1573,6 +1976,7 @@ T227.id AS "Id (Projects)",
 T227.luid AS "Luid (Projects)",
 T227.name AS "Name (Projects)",
 T227.owner_id AS "Owner_ID (Projects)",
+T227.parent_project_id AS "Parent_Project_ID (Projects)",
 T227.site_id AS "Site_ID (Projects)",
 T227.special AS "Special (Projects)",
 T227.state AS "State (Projects)",
@@ -1605,6 +2009,17 @@ T229.view_option_id AS "View_Option_ID (Projects VW Opt)",
 T229.view_option_key_id AS "View_Option_Key_ID (Projects VW Opt)"
 FROM
 projects_view_options T229
+---------------------------------------------------
+-- Table queue_time_average
+SELECT DISTINCT
+T332.avg_queue_time AS "Avg_Queue_Time (Queue Time Average)",
+T332.day_of_week AS "Day_Of_Week (Queue Time Average)",
+T332.id AS "ID (Queue Time Average)",
+T332.interval_number AS "Interval_Number (Queue Time Average)",
+T332.job_type AS "Job_Type (Queue Time Average)",
+T332.num_records AS "Num_Records (Queue Time Average)"
+FROM
+queue_time_average T332
 ---------------------------------------------------
 -- Table refresh_token_devices
 SELECT DISTINCT
@@ -1639,12 +2054,23 @@ refresh_tokens T232
 INNER JOIN system_users T271 ON T232.system_user_id = T271.id
 INNER JOIN refresh_token_devices T231 ON T232.refresh_token_device_id = T231.id
 ---------------------------------------------------
+-- Table remote_agent_site_settings
+SELECT DISTINCT
+T333.default_query_agent_id AS "Default_Query_Agent_ID (Remote Agent Site Settings)",
+T333.id AS "ID (Remote Agent Site Settings)",
+T333.site_id AS "Site_ID (Remote Agent Site Settings)"
+FROM
+remote_agent_site_settings T333
+---------------------------------------------------
 -- Table remote_agents
 SELECT DISTINCT
+T233.capacities AS "Capacities (Remote Agents)",
+T233.concurrent_live_operations_allowed AS "Concurrent_Live_Operations_Allowed (Remote Agents)",
 T233.device_id AS "Device_ID (Remote Agents)",
 T233.id AS "Id (Remote Agents)",
 T233.name AS "Name (Remote Agents)",
 T233.owner_id AS "Owner_ID (Remote Agents)",
+T233.pooled AS "Pooled (Remote Agents)",
 T233.schedules_synced_at AS "Schedules_Synced_At (Remote Agents)",
 T233.site_id AS "Site_ID (Remote Agents)",
 T233.time_zone_id AS "Time_Zone_ID (Remote Agents)"
@@ -1711,6 +2137,7 @@ T243.schedule_type AS "Schedule_Type (Schedules)",
 T243.scheduled_action AS "Scheduled_Action (Schedules)",
 T243.serial_collection_id AS "Serial_Collection_ID (Schedules)",
 T243.start_at_minute AS "Start_At_Minute (Schedules)",
+T243.timezoneid AS "Timezone_ID (Schedules)",
 T243.updated_at AS "Updated_At (Schedules)"
 FROM
 schedules T243
@@ -1806,6 +2233,7 @@ T251.id AS "Id (Sheet IMG)",
 T251.language_id AS "Language_ID (Sheet IMG)",
 T251.locale_id AS "Locale_ID (Sheet IMG)",
 T251.pixel_ratio AS "Pixel_Ratio (Sheet IMG)",
+T251.show_commands_query_str AS "Show_Commands_Query_String (Sheet IMG)",
 T251.view_id AS "View_ID (Sheet IMG)",
 T251.width AS "Width (Sheet IMG)"
 FROM
@@ -1842,6 +2270,14 @@ T253.user_authorization_uri AS "User_Authorization_Uri (Site OIDC Config)",
 T253.user_info_uri AS "User_Info_Uri (Site OIDC Config)"
 FROM
 site_oidc_configurations T253
+---------------------------------------------------
+-- Table site_roles
+SELECT DISTINCT
+T334.id AS "ID (Site Roles)",
+T334.licensing_rank AS "Licensing_Rank (Site Roles)",
+T334.name AS "Name (Site Roles)"
+FROM
+site_roles T334
 ---------------------------------------------------
 -- Table site_saml_configurations
 SELECT DISTINCT
@@ -1903,33 +2339,48 @@ LEFT JOIN users T290 ON T258.user_id = T290.id
 ---------------------------------------------------
 -- Table sites
 SELECT DISTINCT
+T259.allow_live_query_sync AS "Allow_Live_Query_Sync (Sites)",
 T259.authoring_disabled AS "Authoring_Disabled (Sites)",
+T259.cache_warmup_enabled AS "Cache_Warmup_Enabled (Sites)",
+T259.cache_warmup_threshold AS "Cache_Warmup_Threshold (Sites)",
+T259.commenting_enabled AS "Commenting_Enabled (Sites)",
+T259.commenting_mentions_enabled AS "Commenting_Mentions_Enabled (Sites)",
 T259.content_admin_mode AS "Content_Admin_Mode (Sites)",
 T259.content_version_limit AS "Content_Version_Limit (Sites)",
 T259.created_at AS "Created_At (Sites)",
 T259.custom_subscription_email AS "Custom_Subscription_Email (Sites)",
 T259.custom_subscription_footer AS "Custom_Subscription_Footer (Sites)",
+T259.data_alerts_enabled AS "Data_Alerts_Enabled (Sites)",
+T259.extract_encryption_mode AS "Extract_Encryption_Mode (Sites)",
 T259.guest_access_enabled AS "Guest_Access_Enabled (Sites)",
-T259.id AS "Id (Sites)",
-T259.livedb_connections_whitelist_enabled AS "Livedb_Connections_Whitelist_Enabled (Sites)",
+T259.id AS "ID (Sites)",
 T259.lock_version AS "Lock_Version (Sites)",
 T259.luid AS "Luid (Sites)",
 T259.metrics_level AS "Metrics_Level (Sites)",
+T259.mixed_content_enabled AS "Mixed_Content_Enabled (Sites)",
 T259.name AS "Name (Sites)",
 T259.notification_enabled AS "Notification_Enabled (Sites)",
+T259.protocol_cache_lifetime AS "Protocol_Cache_Lifetime (Sites)",
+T259.protocol_group_size_limit AS "Protocol_Group_Size_Limit (Sites)",
 T259.query_limit AS "Query_Limit (Sites)",
 T259.refresh_token_setting AS "Refresh_Token_Setting (Sites)",
+T259.self_service_schedules_enabled AS "Self_Service_Schedules_Enabled (Sites)",
 T259.sheet_image_enabled AS "Sheet_Image_Enabled (Sites)",
+T259.site_invite_notification_enabled AS "Site_Invite_Notification_Enabled (Sites)",
 T259.status AS "Status (Sites)",
 T259.status_reason AS "Status_Reason (Sites)",
 T259.storage_quota AS "Storage_Quota (Sites)",
 T259.subscribe_others_enabled AS "Subscribe_Others_Enabled (Sites)",
 T259.subscriptions_enabled AS "Subscriptions_Enabled (Sites)",
 T259.support_access_enabled AS "Support_Access_Enabled (Sites)",
+T259.tier_author_capacity AS "Tier_Author_Capacity (Sites)",
+T259.tier_basic_user_capacity AS "Tier_Basic_User_Capacity (Sites)",
+T259.tier_interactor_capacity AS "Tier_Interactor_Capacity (Sites)",
 T259.updated_at AS "Updated_At (Sites)",
 T259.url_namespace AS "Url_Namespace (Sites)",
 T259.user_quota AS "User_Quota (Sites)",
-T259.version_history_enabled AS "Version_History_Enabled (Sites)"
+T259.version_history_enabled AS "Version_History_Enabled (Sites)",
+T259.viz_in_tooltip_enabled AS "Viz_In_Tooltip_Enabled (Sites)"
 FROM
 sites T259
 INNER JOIN background_jobs T28 ON T259.id = T28.site_id
@@ -1982,12 +2433,18 @@ T266.value AS "Value (Startup Info)"
 FROM
 startup_infos T266
 ---------------------------------------------------
+-- Table subscription_messages
+SELECT DISTINCT
+T335.id AS "ID (Subscription Messages)",
+T335.message_text AS "Message_Text (Subscription Messages)"
+FROM
+subscription_messages T335
+---------------------------------------------------
 -- Table subscriptions
 SELECT DISTINCT
+T267.created_at AS "Created_At (Subscr)",
 T267.creator_id AS "Creator_ID (Subscr)",
-T267.data_condition AS "Data_Condition (Subscr)",
 T267.data_condition_type AS "Data_Condition_Type (Subscr)",
-T267.data_specification AS "Data_Specification (Subscr)",
 T267.id AS "Id (Subscr)",
 T267.is_refresh_extract_triggered AS "Is_Refresh_Extract_Triggered (Subscr)",
 T267.last_sent AS "Last_Sent (Subscr)",
@@ -1995,6 +2452,7 @@ T267.luid AS "Luid (Subscr)",
 T267.schedule_id AS "Schedule_ID (Subscr)",
 T267.site_id AS "Site_ID (Subscr)",
 T267.subject AS "Subject (Subscr)",
+T267.subscription_message_id AS "Subscription_Message_ID (Subscr)",
 T267.user_id AS "User_ID (Subscr)"
 FROM
 subscriptions T267
@@ -2039,6 +2497,18 @@ INNER JOIN subscriptions T267 ON T270.subscription_id = T267.id
 INNER JOIN sites T259 ON T270.site_id = T259.id
 LEFT JOIN workbooks T301 ON T270.repository_url = T301.repository_url
 ---------------------------------------------------
+-- Table synonyms
+SELECT DISTINCT
+T336.created_at AS "Created_At (Synonyms)",
+T336.field_graph_id AS "Field_Graph_ID (Synonyms)",
+T336.id AS "ID (Synonyms)",
+T336.published_datasource_id AS "Published_Datasource_ID (Synonyms)",
+T336.site_id AS "Site_ID (Synonyms)",
+T336.synonyms AS "Synonyms (Synonyms)",
+T336.updated_at AS "Updated_At (Synonyms)"
+FROM
+synonyms T336
+---------------------------------------------------
 -- Table system_users
 SELECT DISTINCT
 T271.activated_at AS "Activated_At (Sys Users)",
@@ -2058,7 +2528,9 @@ T271.keychain AS "Keychain (Sys Users)",
 T271.lock_version AS "Lock_Version (Sys Users)",
 T271.name AS "Name (Sys Users)",
 T271.salt AS "Salt (Sys Users)",
+T271.seat_licensing_role_id AS "Seat_Licensing_Role_ID (Sys Users)",
 T271.state AS "State (Sys Users)",
+T271.subscription_licensing_role_id AS "Subscription_Licensing_Role_ID (Sys Users)",
 T271.sys AS "Sys (Sys Users)",
 T271.updated_at AS "Updated_At (Sys Users)"
 FROM
@@ -2118,15 +2590,19 @@ INNER JOIN sites T259 ON T277.site_id = T259.id
 -- Table tasks
 SELECT DISTINCT
 T278.active AS "Active (Tasks)",
+T278.args AS "Args (Tasks)",
 T278.consecutive_failure_count AS "Consecutive_Failure_Count (Tasks)",
 T278.created_at AS "Created_At (Tasks)",
-T278.id AS "Id (Tasks)",
-T278.luid AS "Luid (Tasks)",
+T278.historical_run_time AS "Historical_Run_Time (Tasks)",
+T278.id AS "ID (Tasks)",
+T278.luid AS "LUID (Tasks)",
 T278.obj_id AS "Obj_ID (Tasks)",
 T278.obj_type AS "Obj_Type (Tasks)",
 T278.priority AS "Priority (Tasks)",
 T278.schedule_id AS "Schedule_ID (Tasks)",
 T278.site_id AS "Site_ID (Tasks)",
+T278.subtitle AS "subtitle (Tasks)",
+T278.title AS "Title (Tasks)",
 T278.type AS "Type (Tasks)",
 T278.updated_at AS "Updated_At (Tasks)"
 FROM
@@ -2184,6 +2660,7 @@ INNER JOIN system_users T271 ON T286.system_user_id = T271.id
 SELECT DISTINCT
 T289.display_mode AS "Display_Mode (User Prefs)",
 T289.id AS "Id (User Prefs)",
+T289.is_user_set_timezone AS "Is_User_Set_Timezone  (User Prefs)",
 T289.language_id AS "Language_ID (User Prefs)",
 T289.local_timezone_name AS "Local_Timezone_Name (User Prefs)",
 T289.local_timezone_offset AS "Local_Timezone_Offset (User Prefs)",
@@ -2200,19 +2677,17 @@ INNER JOIN system_users T271 ON T289.system_user_id = T271.id
 ---------------------------------------------------
 -- Table users
 SELECT DISTINCT
-T290.admin_level AS "Admin_Level (Users)",
 T290.created_at AS "Created_At (Users)",
 T290.extracts_required AS "Extracts_Required (Users)",
 T290.id AS "Id (Users)",
-T290.licensing_role_id AS "Licensing_Role_ID (Users)",
 T290.lock_version AS "Lock_Version (Users)",
 T290.login_at AS "Login_At (Users)",
 T290.luid AS "Luid (Users)",
 T290.nonce AS "Nonce (Users)",
-T290.publisher_tristate AS "Publisher_Tristate (Users)",
 T290.raw_data_suppressor_tristate AS "Raw_Data_Suppressor_Tristate (Users)",
 T290.row_limit AS "Row_Limit (Users)",
 T290.site_id AS "Site_ID (Users)",
+T290.site_role_id AS "Site_Role_ID (Users)",
 T290.storage_limit AS "Storage_Limit (Users)",
 T290.system_admin_auto AS "System_Admin_Auto (Users)",
 T290.system_user_id AS "System_User_ID (Users)",
@@ -2241,7 +2716,6 @@ INNER JOIN subscriptions T267 ON T290.id = T267.creator_id
 INNER JOIN taggings T276 ON T290.id = T276.user_id
 INNER JOIN trusted_tickets T281 ON T290.id = T281.user_id
 INNER JOIN user_default_customized_views T284 ON T290.id = T284.user_id
-LEFT JOIN licensing_roles T109 ON T290.licensing_role_id = T109.id
 INNER JOIN sites T259 ON T290.site_id = T259.id
 INNER JOIN system_users T271 ON T290.system_user_id = T271.id
 INNER JOIN views T297 ON T290.id = T297.owner_id
@@ -2271,6 +2745,19 @@ T291.system_user_id AS "System_User_ID (Users VW)"
 FROM
 users_view T291
 INNER JOIN system_users T271 ON T291.system_user_id = T271.id
+---------------------------------------------------
+-- Table value_concepts
+SELECT DISTINCT
+T337.created_at AS "Created_At (Value Concepts)",
+--T337.data AS "Data (Value Concepts)",--Get an error when this is in the query
+T337.field_concept_id AS "Field_Concept_ID (Value Concepts)",
+T337.id AS " (Value Concepts)",
+T337.object_concept_id AS "Object_Concept_ID (Value Concepts)",
+T337.ontology_id AS "Ontology_ID (Value Concepts)",
+T337.updated_at AS "Updated_At (Value Concepts)",
+T337.value_concept_id AS "Value_Concept_ID (Value Concepts)"
+FROM
+value_concepts T337
 ---------------------------------------------------
 -- Table view_metrics_aggregations
 SELECT DISTINCT
@@ -2358,6 +2845,29 @@ INNER JOIN users T290 ON T298.user_id = T290.id
 INNER JOIN views T297 ON T298.view_id = T297.id
 INNER JOIN sites T259 ON T298.site_id = T259.id
 ---------------------------------------------------
+-- Table viz_snapshots
+SELECT DISTINCT
+T338.created_at AS "Created_At (Viz_Snapshots)",
+T338.data_id AS "Data_ID (Viz_Snapshots)",
+T338.id AS "ID (Viz_Snapshots)",
+T338.image_id AS "Image_ID (Viz_Snapshots)",
+T338.reference_count AS "Reference_Count (Viz_Snapshots)",
+T338.thumbnail_id AS "Thumbnail_ID (Viz_Snapshots)",
+T338.view_id AS "View_ID (Viz_Snapshots)"
+FROM
+viz_snapshots T338
+---------------------------------------------------
+-- Table viz_states
+SELECT DISTINCT
+T339.created_at AS "Created_At (viz_states)",
+T339.data_id AS "Data_ID (viz_states)",
+T339.id AS "ID (viz_states)",
+T339.image_id AS "Image_ID (viz_states)",
+T339.thumbnail_id AS "Thumbnail_ID (viz_states)",
+T339.view_id AS "View_ID (viz_states)"
+FROM
+viz_states T339
+---------------------------------------------------
 -- Table workbook_checksums
 SELECT DISTINCT
 T299.checksum AS "Checksum (WB Checksums)",
@@ -2372,7 +2882,8 @@ LEFT JOIN workbooks T301 ON T299.workbook_id = T301.id
 -- Table workbook_versions
 SELECT DISTINCT
 T300.content_key AS "Content_Key (WB Versions)",
-T300.id AS "Id (WB Versions)",
+T300.id AS "ID (WB Versions)",
+T300.is_revision_file_reduced AS "Is_Revision_File_Reduced (WB Versions)",
 T300.publish_metadata AS "Publish_Metadata (WB Versions)",
 T300.published_at AS "Published_At (WB Versions)",
 T300.publisher_id AS "Publisher_ID (WB Versions)",
@@ -2400,6 +2911,7 @@ T301.description AS "Description (WB)",
 T301.display_tabs AS "Display_Tabs (WB)",
 T301.document_version AS "Document_Version (WB)",
 --T301.embedded AS "Embedded (WB)",--Possible this field exceeds 8000 characters resulting in Postgres Error -- Github Issue #2
+T301.extract_encryption_state AS "Extract_Encryption_State (WB)",
 T301.extracts_incremented_at AS "Extracts_Incremented_At (WB)",
 T301.extracts_refreshed_at AS "Extracts_Refreshed_At (WB)",
 T301.first_published_at AS "First_Published_At (WB)",

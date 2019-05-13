@@ -15,7 +15,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 MIT License: https://opensource.org/licenses/MIT
 
-Pulled Tableau Server 10.1.4
+Pulled Tableau Server 2018.3.4
 https://onlinehelp.tableau.com/current/server/en-us/data_dictionary.html
 
 How to use this File:

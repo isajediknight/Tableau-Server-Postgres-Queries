@@ -37,12 +37,12 @@ T55.size AS "Size (DS)",
 T55.state AS "State (DS)",
 T55.table_name AS "Table_Name (DS)",
 T55.updated_at AS "Updated_At (DS)",
-CASE T55.connectable WHEN true THEN false ELSE true END AS "Embedded_In_Workbook (DS)" ,
+CASE WHEN T55_dc.id IS NULL THEN 'Embedded' ELSE 'Standalone' END AS "Embedded_In_Workbook (DS)" ,
 -- <--- BEGIN OPTIONAL ALL DATASOURCES COLUMNS --->
 -- Include to get all Datasources: Published and Embedded
 CASE WHEN T55_dc.dbclass = 'sqlproxy' THEN true ELSE false END AS "References_Published_Data_Source (DS)" ,
 COALESCE(T49_dc.has_extract,T55.data_engine_extracts) AS "Has_Extract (DS Embedded)" ,
-CASE WHEN T49_dc.id IS NULL THEN '' ELSE CONCAT('https://tableaucrt.cerner.com/#/datasources/',T49_dc.id,'/connections') END AS "Datasource URL (DS Embedded)",
+CASE WHEN T49_dc.id IS NULL THEN '' ELSE CONCAT('https://tableau.cerner.com/#/datasources/',T49_dc.id,'/connections') END AS "Datasource URL (DS Embedded)",
 -- Published Datasources - Is the Datasource Published Seperately to Tableau Server
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.id ELSE T55.id END AS "Id (DS Published)", -- Published Datasource ID.  For workbooks which use a published datasource, take that ID rather than the Datasource ID referenced by the workbook.
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.data_engine_extracts ELSE T55.data_engine_extracts END AS "Data_Engine_Extracts (DS Published)",
@@ -58,7 +58,7 @@ CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.db_name ELSE T55.db_name END AS 
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.table_name ELSE T55.table_name END AS "Table_Name (DS Published)",
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.is_hierarchical ELSE T55.is_hierarchical END AS "Is_Hierarchical (DS Published)",
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.is_certified ELSE T55.is_certified END AS "Is_Certified (DS Published)",
-CASE WHEN T55_dc.id IS NULL THEN '' ELSE CONCAT('https://tableaucrt.cerner.com/#/datasources/',T55_dc.id,'/connections') END AS "Datasource URL (DS Published)",
+CASE WHEN T55_dc.id IS NULL THEN '' ELSE CONCAT('https://tableau.cerner.com/#/datasources/',T55_dc.id,'/connections') END AS "Datasource URL (DS Published)",
 T55_ds.repository_url AS "Repository_Url (DS Published)",
 -- <--- END OPTIONAL ALL DATASOURCES COLUMNS --->
 T301.asset_key_id AS "Asset_Key_ID (WB)",
@@ -150,7 +150,35 @@ T271_datasource_owner.name AS "Name (DS Sys Users)",
 T271_datasource_owner.salt AS "Salt (DS Sys Users)",
 T271_datasource_owner.state AS "State (DS Sys Users)",
 T271_datasource_owner.sys AS "Sys (DS Sys Users)",
-T271_datasource_owner.updated_at AS "Updated_At (DS Sys Users)"
+T271_datasource_owner.updated_at AS "Updated_At (DS Sys Users)",
+T297.caption AS "Caption (Views)",
+T297.created_at AS "Created_At (Views)",
+T297.datasource_id AS "Datasource_ID (Views)",
+T297.description AS "Description (Views)",
+T297.edit_count AS "Edit_Count (Views)",
+T297.fields AS "Fields (Views)",
+T297.first_published_at AS "First_Published_At (Views)",
+T297.for_cache_updated_at AS "For_Cache_Updated_At (Views)",
+T297.id AS "Id (Views)",
+T297.index AS "Index (Views)",
+T297.locked AS "Locked (Views)",
+T297.luid AS "Luid (Views)",
+T297.name AS "Name (Views)",
+T297.owner_id AS "Owner_ID (Views)",
+T297.published AS "Published (Views)",
+T297.read_count AS "Read_Count (Views)",
+T297.repository_data_id AS "Repository_Data_ID (Views)",
+T297.repository_url AS "Repository_Url (Views)",
+REPLACE(T297.repository_url,'/sheets','') AS "Cuurentsheet  (Views)",
+T297.revision AS "Revision (Views)",
+T297.sheet_id AS "Sheet_ID (Views)",
+T297.sheettype AS "Sheettype (Views)",
+T297.site_id AS "Site_ID (Views)",
+T297.state AS "State (Views)",
+T297.thumbnail_id AS "Thumbnail_ID (Views)",
+T297.title AS "Title (Views)",
+T297.updated_at AS "Updated_At (Views)",
+T297.workbook_id AS "Workbook_ID (Views)"
 FROM
 datasources T55
 -- <--- BEGIN OPTIONAL ALL DATASOURCES JOINS --->
@@ -164,3 +192,4 @@ LEFT JOIN system_users T271_workbook_owner ON T271_workbook_owner.id = T290_work
 INNER JOIN projects T227 ON T227.id = T55.project_id
 INNER JOIN users T290_datasource_owner ON T55.owner_id = T290_datasource_owner.id
 LEFT JOIN system_users T271_datasource_owner ON T271_datasource_owner.id = T290_datasource_owner.system_user_id
+INNER JOIN views T297 ON T297.workbook_id = T301.id

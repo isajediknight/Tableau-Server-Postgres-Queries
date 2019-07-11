@@ -1592,7 +1592,7 @@ FROM
 http_requests T97
 INNER JOIN users T290 ON T97.user_id = T290.id
 INNER JOIN sites T259 ON T97.site_id = T259.id
-INNER JOIN views T297 ON T97.currentsheet = T297.view_url
+INNER JOIN views T297 ON T97.currentsheet = REPLACE(T297.repository_url,'/sheets','')
 INNER JOIN users T290 ON T97.owner_id = T290.id
 ---------------------------------------------------
 -- Table import_mappable_table_implicit_fks

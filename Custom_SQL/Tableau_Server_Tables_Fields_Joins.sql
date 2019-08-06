@@ -845,6 +845,7 @@ CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.db_name ELSE T55.db_name END AS 
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.table_name ELSE T55.table_name END AS "Table_Name (DS Published)",
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.is_hierarchical ELSE T55.is_hierarchical END AS "Is_Hierarchical (DS Published)",
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.is_certified ELSE T55.is_certified END AS "Is_Certified (DS Published)",
+CASE WHEN T55_URL.data_connection_id IS NULL THEN '' ELSE CONCAT('https://example.com/#/datasources/',T55_URL.data_connection_id,'/connections') END AS "Datasource URL (DS Published)",
 T55_ds.repository_url AS "Repository_Url (DS Published)" --new
 -- <--- END OPTIONAL ALL DATASOURCES COLUMNS --->
 FROM
@@ -853,6 +854,14 @@ datasources T55
 LEFT JOIN (SELECT datasource_id, has_extract FROM data_connections GROUP BY datasource_id, has_extract) as T49_dc ON T55.id = T49_dc.datasource_id -- Obtains Extract information on first level Datasources (T49_dc = embedded data connections)
 LEFT JOIN data_connections T55_dc ON T55.id = T55_dc.datasource_id AND T55_dc.dbclass = 'sqlproxy' -- Obtains information on Datasources used by a Workbook where they connect to Published Datasources
 LEFT JOIN datasources T55_ds ON T55_dc.dbname = T55_ds.repository_url AND T55_ds.connectable = true -- Published Connectable Datasources for additional info
+
+LEFT JOIN (
+SELECT MIN(dc.id) AS "data_connection_id", CAST('Data Source' AS TEXT) AS "item_type", dc.datasource_id
+FROM data_connections AS dc
+INNER JOIN datasources AS dc_d ON dc.datasource_id = dc_d.id AND dc_d.connectable = true
+GROUP BY dc.datasource_id
+) as T55_url ON T55_url.datasource_id = (CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.id ELSE T55.id END) -- Used to get the URL of the Extract
+
 -- <---  END OPTIONAL ALL DATASOURCES JOINS --->
 INNER JOIN data_connections T49 ON T55.id = T49.datasource_id
 LEFT JOIN data_connections T49 ON T55.owner_id = T49.id AND data_connections.OWNER_TYPE = 'Datasource'

@@ -42,7 +42,7 @@ CASE WHEN T55_dc.id IS NULL THEN 'Embedded' ELSE 'Standalone' END AS "Embedded_I
 -- Include to get all Datasources: Published and Embedded
 CASE WHEN T55_dc.dbclass = 'sqlproxy' THEN true ELSE false END AS "References_Published_Data_Source (DS)" ,
 COALESCE(T49_dc.has_extract,T55.data_engine_extracts) AS "Has_Extract (DS Embedded)" ,
-CASE WHEN T49_dc.id IS NULL THEN '' ELSE CONCAT('https://tableau.cerner.com/#/datasources/',T49_dc.id,'/connections') END AS "Datasource URL (DS Embedded)",
+CASE WHEN T49_dc.id IS NULL THEN '' ELSE CONCAT('https://example.com/#/datasources/',T49_dc.id,'/connections') END AS "Datasource URL (DS Embedded)",
 -- Published Datasources - Is the Datasource Published Seperately to Tableau Server
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.id ELSE T55.id END AS "Id (DS Published)", -- Published Datasource ID.  For workbooks which use a published datasource, take that ID rather than the Datasource ID referenced by the workbook.
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.data_engine_extracts ELSE T55.data_engine_extracts END AS "Data_Engine_Extracts (DS Published)",
@@ -58,7 +58,7 @@ CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.db_name ELSE T55.db_name END AS 
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.table_name ELSE T55.table_name END AS "Table_Name (DS Published)",
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.is_hierarchical ELSE T55.is_hierarchical END AS "Is_Hierarchical (DS Published)",
 CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.is_certified ELSE T55.is_certified END AS "Is_Certified (DS Published)",
-CASE WHEN T55_dc.id IS NULL THEN '' ELSE CONCAT('https://tableau.cerner.com/#/datasources/',T55_dc.id,'/connections') END AS "Datasource URL (DS Published)",
+CASE WHEN T55_URL.data_connection_id IS NULL THEN '' ELSE CONCAT('https://example.com/#/datasources/',T55_URL.data_connection_id,'/connections') END AS "Datasource URL (DS Published)",
 T55_ds.repository_url AS "Repository_Url (DS Published)",
 -- <--- END OPTIONAL ALL DATASOURCES COLUMNS --->
 T301.asset_key_id AS "Asset_Key_ID (WB)",
@@ -241,6 +241,14 @@ datasources T55
 LEFT JOIN (SELECT datasource_id, has_extract, id FROM data_connections GROUP BY datasource_id, has_extract, id) as T49_dc ON T55.id = T49_dc.datasource_id -- Obtains Extract information on first level Datasources (T49_dc = embedded data connections)
 LEFT JOIN data_connections T55_dc ON T55.id = T55_dc.datasource_id AND T55_dc.dbclass = 'sqlproxy' -- Obtains information on Datasources used by a Workbook where they connect to Published Datasources
 LEFT JOIN datasources T55_ds ON T55_dc.dbname = T55_ds.repository_url AND T55_ds.connectable = true -- Published Connectable Datasources for additional info
+
+LEFT JOIN (
+SELECT MIN(dc.id) AS "data_connection_id", CAST('Data Source' AS TEXT) AS "item_type", dc.datasource_id
+FROM data_connections AS dc
+INNER JOIN datasources AS dc_d ON dc.datasource_id = dc_d.id AND dc_d.connectable = true
+GROUP BY dc.datasource_id
+) as T55_url ON T55_url.datasource_id = (CASE T55_dc.dbclass WHEN 'sqlproxy' THEN T55_ds.id ELSE T55.id END) -- Used to get the URL of the Extract
+
 -- <---  END OPTIONAL ALL DATASOURCES JOINS --->
 LEFT JOIN workbooks T301 ON T301.id = T55.parent_workbook_id
 LEFT JOIN users T290_workbook_owner ON T301.owner_id = T290_workbook_owner.id

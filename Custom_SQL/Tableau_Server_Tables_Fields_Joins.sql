@@ -2948,7 +2948,8 @@ T301.state AS "State (WB)",
 T301.thumb_user AS "Thumb_User (WB)",
 T301.updated_at AS "Updated_At (WB)",
 T301.version AS "Version (WB)",
-T301.view_count AS "View_Count (WB)"
+T301.view_count AS "View_Count (WB)",
+CONCAT('https://tableau.cerner.com/#/workbooks/',T301.id,'/views') AS "URL (WB)"
 FROM
 workbooks T301
 LEFT JOIN data_alerts T47 ON T301.id = T47.workbook_id
